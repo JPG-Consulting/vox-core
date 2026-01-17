@@ -16,6 +16,29 @@ Non-goals:
 
 ---
 
+## Documentation Safety and Change Discipline
+
+All AI-assisted contributions to this repository MUST comply with
+`DOCUMENTATION_POLICY.md`.
+
+In particular:
+
+- Authoritative documentation MUST NOT be rewritten from scratch.
+- Changes to authoritative documents MUST be additive by default.
+- Existing text MUST NOT be removed, shortened, or paraphrased unless the
+  change is explicitly intended and documented.
+- If an AI-generated change risks ambiguity, loss of constraints, or silent
+  deletion of content, the change MUST be rejected.
+
+AI assistants MUST:
+- propose documentation changes as insertions, not replacements
+- specify exact insertion points
+- avoid reconstructing documents from summaries or memory
+
+Violations of documentation safety rules are considered blocking issues.
+
+---
+
 ## How to Use This Repo as an AI Assistant
 
 ### MUST Read First (in this order)

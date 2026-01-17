@@ -37,7 +37,7 @@ All identity sources are normalized into a common structure:
 ```json
 {
   "source": "voice | vision | satellite | explicit",
-  "user_id": "juan | unknown",
+  "user_id": "user_a | unknown",
   "confidence": 0.0
 }
 ```
@@ -46,7 +46,7 @@ Sources:
 - `voice`: speaker embeddings
 - `vision`: face recognition
 - `satellite`: local inference on device
-- `explicit`: user self-identification (“I am Juan”)
+- `explicit`: user self-identification (“I am User_A”)
 
 ---
 
@@ -105,8 +105,8 @@ A conflict exists if:
 - or a strong signal contradicts the locked identity
 
 Example:
-- voice → Juan (0.82)
-- vision → Miguel (0.88)
+- voice → User_A (0.82)
+- vision → User_B (0.88)
 
 Result:
 - identity_state = AMBIGUOUS
@@ -145,7 +145,7 @@ The system MUST NOT merge identities.
 ## Explicit Identity Claims
 
 Example:
-> “I am Juan”
+> “I am User_A”
 
 Rules:
 - creates an `explicit` identity signal
@@ -170,8 +170,8 @@ Rules:
 ## Vision + Voice Interaction Examples
 
 ### Case 1: Voice + Vision Agree
-- voice → Juan (0.75)
-- vision → Juan (0.90)
+- voice → User_A (0.75)
+- vision → User_A (0.90)
 
 Result:
 - CONFIRMED
@@ -189,8 +189,8 @@ Result:
 ---
 
 ### Case 3: Voice Changes Mid-Conversation
-- locked identity: Juan
-- new voice signal: Miguel (0.70)
+- locked identity: User_A
+- new voice signal: User_B (0.70)
 
 Result:
 - AMBIGUOUS

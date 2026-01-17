@@ -30,6 +30,7 @@ Items may change priority or be removed as the project evolves.
 - [x] Core documentation set defined
 - [x] Security invariants formalized
 - [x] State machines formalized
+- [ ] Add addressing resolution (grammatical gender + preferred name)
 - [x] Deployment constraints defined
 - [ ] Review documentation for consistency after first code scaffolding
 - [ ] Add diagrams (optional, non-authoritative)
@@ -82,6 +83,7 @@ Items may change priority or be removed as the project evolves.
 
 ### Context Management
 - [ ] Context filtering per privacy rules
+- [ ] Date-aware system events (birthday greeting)
 - [ ] Conversation memory injection
 - [ ] System-time and date tools
 
@@ -90,6 +92,7 @@ Items may change priority or be removed as the project evolves.
 ## Phase 4 – Commands & Automation
 
 ### Command System
+- [ ] Implement group-based command permissions
 - [ ] Implement command execution pipeline
 - [ ] Implement authorization manager
 - [ ] Implement confirmation manager
@@ -105,6 +108,7 @@ Items may change priority or be removed as the project evolves.
 ## Phase 5 – Identity & Multi-User
 
 ### Identity
+- [ ] Implement age context derivation and minor-safe defaults
 - [ ] Implement identity FSM
 - [ ] Implement speaker recognition
 - [ ] Implement identity lock logic
@@ -142,6 +146,7 @@ Items may change priority or be removed as the project evolves.
 ## Cross-Cutting Concerns
 
 ### Security & Privacy
+- [ ] Implement third-party personal-fact provenance and visibility rules
 - [ ] Pen-test privacy edge cases
 - [ ] Verify fail-closed behavior
 - [ ] Review all external API calls
@@ -180,3 +185,4 @@ If you are an AI assistant:
 ## Change Log
 
 - 2026-01-16: Initial version.
+- 2026-01-16: Added tasks for addressing, age-aware behavior, command grouping, and third-party fact provenance.

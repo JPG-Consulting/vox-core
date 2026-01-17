@@ -100,6 +100,16 @@ Special cases:
 
 ## Vision Processing Flow
 
+
+---
+
+## Vision-Only Identity Guards
+
+- Vision input alone MUST NOT result in a CONFIRMED_ACTIVE identity state.
+- Vision signals require corroboration from other sources
+  (e.g., voice, explicit confirmation) before becoming active.
+
+
 1. Image received
 2. Validate request and conversation context
 3. If satellite identity is present and trusted:
@@ -116,6 +126,15 @@ The Vision provider NEVER decides identity on its own.
 ---
 
 ## Identity Signals from Vision
+---
+
+## Age and Vision Separation
+
+- Vision-derived identity signals MUST NOT override age-based restrictions.
+- A high-confidence visual identity does not imply permission to perform
+  age-restricted actions.
+- Age classification MUST be evaluated independently of vision confidence.
+
 
 Vision produces identity signals in the same format as other sources:
 
@@ -146,6 +165,17 @@ Privacy rules become stricter immediately.
 ---
 
 ## Privacy and Safety Rules
+
+
+---
+
+## Vision Non-Execution Rule
+
+- Vision processing MUST NOT directly trigger command execution.
+- Vision output is limited to identity signals and conversation mode hints.
+- All actions require intent resolution and command authorization
+  via non-visual channels.
+
 
 - Vision MUST NOT expose identities of people not present in the conversation
 - Vision MUST NOT reveal profile data

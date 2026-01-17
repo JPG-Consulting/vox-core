@@ -58,6 +58,14 @@ RAG is orchestrated by the Core, not the LLM.
 ---
 
 ## Knowledge Sources
+---
+
+## Provenance Isolation
+
+- Knowledge entries from different sources MUST retain separate provenance.
+- Provenance data MUST NOT be merged, averaged, or discarded.
+- Verification status MUST be tracked per source.
+
 
 ### 1) Local Knowledge Store
 
@@ -117,6 +125,14 @@ Example:
 ---
 
 ## Storage Policy
+---
+
+## RAG Non-Mutation Rule
+
+- RAG MUST NOT directly modify user profiles, preferences, or identity data.
+- Retrieved knowledge MAY inform responses but MUST NOT be promoted to
+  profile data without an explicit, owner-confirmed update flow.
+
 
 Knowledge MAY be stored only if:
 - it is non-personal OR explicitly allowed
@@ -131,6 +147,15 @@ Knowledge MUST include:
 ---
 
 ## Retrieval Rules
+---
+
+## Age-Aware RAG Behavior
+
+- RAG responses MUST respect the requester’s age classification.
+- Content retrieved from external sources MUST be filtered or constrained
+  according to age-based safety rules.
+- Age classification MUST be evaluated before external knowledge is requested.
+
 
 When answering a question:
 1. Prefer local knowledge
@@ -143,6 +168,15 @@ The system SHOULD NOT hallucinate missing facts.
 ---
 
 ## Interaction with Intents
+---
+
+## RAG Non-Execution Rule
+
+- RAG output MUST NOT directly trigger command execution.
+- RAG MUST NOT initiate permission changes, delegation, or profile updates.
+- All actions require intent resolution and command authorization
+  outside of the RAG pipeline.
+
 
 RAG is typically triggered by:
 - informational intents

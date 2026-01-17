@@ -13,6 +13,30 @@ All command behavior MUST respect `SECURITY_INVARIANTS.md`.
 
 ---
 
+## Command Groups
+
+
+### Command Group Isolation
+
+- Command groups are strictly isolated security domains.
+- Authorization for one command group MUST NOT imply authorization
+  for any other command group, regardless of semantic similarity.
+- Implementations MUST NOT infer group membership from role,
+  intent wording, or prior behavior.
+
+
+Commands MUST be assigned to a **command group**. Command groups allow coarse-grained authorization and safe delegation.
+
+Examples of groups:
+- `home_automation`
+- `robot_control`
+- `security`
+- `media`
+- `system`
+
+A user may be authorized for one group but not another.
+
+
 ## Command Definition
 
 A command is a structured intent that may trigger an action in the real world or system.
@@ -30,7 +54,8 @@ Example:
   "intent": "turn_on_light",
   "risk_level": "low",
   "command_type": "IMMEDIATE",
-  "required_permissions": ["control_lights"]
+  "group": "home_automation",
+  "required_permissions": ["home_automation.execute"]
 }
 ```
 
@@ -81,17 +106,28 @@ Example:
   "intent": "close_door",
   "risk_level": "high",
   "command_type": "CONFIRM_REQUIRED",
-  "required_permissions": ["control_doors"]
+  "group": "home_automation",
+  "required_permissions": ["home_automation.execute"]
 }
 ```
 
 ---
 
 ## Authorization Rules
+---
+
+## Age-Aware Command Restrictions
+
+- Command execution MUST respect the speaker’s age classification.
+- Users classified as CHILD or TEEN MUST NOT:
+  - execute commands with risk level HIGH
+  - confirm commands that require explicit confirmation
+- Age classification MUST be re-evaluated at confirmation time.
+
 
 A command may only execute if:
 1. The speaker identity is CONFIRMED
-2. The speaker has the required permissions via:
+2. The speaker has the required permissions (typically `<group>.execute`) via:
    - role
    - active delegation
 3. Conversation mode allows command execution
@@ -102,18 +138,36 @@ Knowing a user does not grant permission.
 
 ## Delegation Interaction
 
+
+### Delegation Revocation Semantics
+
+- Delegation revocation MUST take effect immediately.
+- Pending commands created under a revoked delegation MUST be cancelled.
+- Revocation MUST NOT require confirmation from the delegated user.
+
+
 Delegation:
-- allows execution of specific commands
+- grants execution access at the **command group** level (e.g., home automation but not robot control)
 - does NOT change user role
 - does NOT allow re-delegation
 
 Delegated users:
-- MAY execute allowed commands
+- MAY execute allowed commands within delegated groups
 - MUST NOT grant permissions to others
 
 ---
 
-## Confirmation Flow (Two-Phase)
+## Confirmation Flow
+
+
+### Confirmation Authority Guards
+
+- Confirmation MUST come from:
+  - the same confirmed identity
+  - the same age classification
+  - the same conversation context
+- Paraphrased or indirect confirmations MUST NOT be accepted.
+ (Two-Phase)
 
 For CONFIRM_REQUIRED commands:
 
@@ -184,6 +238,19 @@ If execution fails:
 
 ---
 
+
+---
+
+## Prohibited Command Classes
+
+The following command types MUST NOT be implemented:
+
+- commands that modify another user’s identity or addressing preferences
+- commands that modify age or birthdate directly
+- commands that grant or revoke permissions without explicit confirmation
+  from an authorized profile owner
+
+
 ## Non-Goals
 
 - Natural language command discovery
@@ -205,3 +272,4 @@ If execution fails:
 ## Change Log
 
 - 2026-01-16: Initial version.
+- 2026-01-16: Added command grouping and group-scoped delegation.

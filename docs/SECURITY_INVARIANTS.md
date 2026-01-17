@@ -24,6 +24,18 @@ If identity, consent, authorization, or intent is unclear:
 - Do NOT disclose private data
 - Ask for clarification or confirmation
 
+
+---
+
+## Documentation Safety Invariants
+
+### INV-DOC-1: Invariant Integrity
+
+- This document is governed by `DOCUMENTATION_POLICY.md`.
+- Invariants defined here MUST NOT be weakened, removed, or reinterpreted
+  by documentation changes that violate the additive-only rule.
+- If a documentation change conflicts with this document, the change MUST be rejected.
+
 ---
 
 ## Identity Invariants
@@ -51,12 +63,85 @@ If identity, consent, authorization, or intent is unclear:
 
 ---
 
+## Age & Child Safety Invariants
+
+### INV-AGE-1: Age-Aware Behavior
+
+- The system MUST take the user’s age into account when selecting tone, content, and safety behavior.
+- Age MUST be derived from birthdate when possible.
+
+### INV-AGE-2: Unknown Age Defaults to Minor-Safe
+
+- If the user’s age group is `unknown`, the system MUST behave conservatively as if the user is a minor.
+- In minor-safe mode, the system MUST avoid adult topics and MUST apply stricter command and disclosure rules.
+
+### INV-AGE-3: Minors MUST NOT Self-Modify Age or Birthdate
+
+- If a user is classified as a minor, the system MUST NOT allow that user to:
+  - change their birthdate
+  - delete their birthdate
+  - mark their birthdate as unknown
+  - otherwise alter age-relevant profile fields
+- Any such attempt MUST be rejected.
+- The system MUST return a warning explaining that the operation is restricted
+  for safety reasons.
+
+### INV-AGE-4: Birthdate Modification Authority and Auditability
+
+- Birthdate changes are permitted only if:
+  - the profile owner is classified as an adult, OR
+  - an authorized adult modifies a minor’s birthdate under an explicit policy.
+- All birthdate changes MUST be auditable, including:
+  - who performed the change
+  - when it occurred
+  - the reason or authority under which it was performed.
+
 ## Privacy Invariants
 
 ### INV-PRIVACY-1: Private Data Is Private by Default
 
 - All user profile data is PRIVATE unless explicitly marked otherwise.
 - Private data MUST NOT be disclosed to other users without consent.
+
+---
+
+### INV-PRIVACY-NAME-1: Legal Name Protection
+
+- A user’s legal/real name (identity name) MUST NOT be used in casual interaction.
+- The system SHOULD address users using their `preferred_name` when available.
+- Legal names MAY be used only for:
+  - safety-critical dialogs
+  - integrations requiring identity certainty
+  - internal logs
+
+
+---
+
+## Ownership and Preference Immutability Invariants
+
+### INV-OWN-1: Profile Ownership Is Exclusive
+
+- A user profile has exactly one owner.
+- Only the profile owner may authorize permanent changes to their own profile data.
+- Roles, delegation, or command authority MUST NOT grant the ability to modify
+  another user’s profile ownership or preferences.
+
+### INV-OWN-2: Addressing Preferences Are Owner-Only
+
+- Addressing preferences, including:
+  - preferred name or nickname
+  - grammatical gender or form-of-address preferences
+  - language preference for interaction
+  MUST be modifiable only by the profile owner.
+- The system MUST NOT infer, override, or update these fields based on
+  third-party statements or conversational inference.
+
+### INV-OWN-3: Identity Fields Are Immutable to Third Parties
+
+- Identity-defining fields (including legal name and preferred name) MUST NOT be
+  modified by any party other than the profile owner.
+- Age-relevant attributes follow the Age & Child Safety invariants in this document.
+- Any attempt to modify another user’s identity fields MUST be denied (fail closed).
 
 ---
 
@@ -70,6 +155,65 @@ Rules:
 - Conversation memory MAY be shared among participants of that conversation.
 - User profile data MUST NOT be used to answer questions for other users
   unless explicit consent exists.
+
+---
+
+### INV-PRIVACY-FACT-1: Profile Owner Precedence
+
+- Personal facts stored in a profile belong to the profile owner.
+- If the profile owner provides a value for a fact, it is authoritative.
+- Third-party facts MUST NOT override owner-provided facts.
+
+### INV-PRIVACY-FACT-2: Third-Party Visibility Is Limited
+
+
+---
+
+## Learning and Social-Engineering Resistance Invariants
+
+### INV-LEARN-1: Learning Does Not Imply Authority
+
+- The system MAY learn patterns or observations from interaction.
+- Learning MUST NOT grant authority to modify profile data or preferences.
+- Learned information MUST NOT bypass ownership, consent, or age restrictions.
+
+### INV-LEARN-2: No Indirect Profile Modification
+
+- The system MUST NOT accept indirect requests to modify a user profile,
+  including attempts that reference prior statements, implied consent,
+  or third-party assertions.
+- Profile modifications MUST originate from the profile owner through
+  an explicit, validated update flow.
+
+### INV-LEARN-3: Third-Party Facts Are Additive-Only and Non-Authoritative
+
+- The system MAY store third-party statements about another user as
+  non-authoritative claims with provenance and confidence.
+- Third-party claims MUST be additive-only:
+  - they MAY add new candidate facts with provenance
+  - they MUST NOT modify or delete owner-provided facts
+  - they MUST NOT modify preferences, identity fields, or age-relevant attributes
+
+### INV-LEARN-4: No Authority Escalation by Repetition or Pressure
+
+- Repeated statements, conversational pressure, or persistence MUST NOT:
+  - increase authority
+  - relax security constraints
+  - override confirmation requirements
+- Authority and permissions MUST be evaluated solely from validated identity,
+  role, and delegation state.
+
+### INV-LEARN-5: Conflict Handling MUST Protect the Owner
+
+- If a third-party claim conflicts with an owner-provided value:
+  - the owner-provided value MUST remain authoritative
+  - the conflicting claim MUST NOT cause disclosure of the owner’s value
+    to the third-party provider
+  - the system SHOULD avoid revealing that a conflict exists, unless
+    the profile owner is the requester
+
+- If a user provides a fact about another user, they MAY be allowed to access that fact **only** within the visibility rules recorded for that fact.
+- If the profile owner has provided a conflicting value, the owner’s value MUST NOT be disclosed to the third-party provider.
 
 ---
 
@@ -124,6 +268,20 @@ Rules:
 
 ---
 
+
+---
+
+## Date & System Event Invariants
+
+### INV-CONV-BDAY-1: Birthday Greeting Safety
+
+- The system MAY greet a user for their birthday only if:
+  - identity is CONFIRMED
+  - current date is known/trusted
+  - birthdate is known with sufficient confidence
+  - the greeting has not already occurred for that user on that date
+- Birthday greetings MUST NOT disclose sensitive data (e.g., full birthdate) unless allowed.
+
 ## Command Authorization Invariants
 
 ### INV-CMD-1: Commands Require Authorization
@@ -157,6 +315,28 @@ Knowing someone ≠ being authorized.
 Ambiguous phrases MUST NOT grant permissions.
 
 ---
+
+
+---
+
+## Command Group Authorization Invariants
+
+### INV-CMD-GRP-1: Commands Are Authorized by Group
+
+- Commands MUST belong to one or more explicit command groups.
+- Authorization MUST be evaluated at the command-group level, not per-command
+  in isolation.
+
+### INV-CMD-GRP-2: Command Group Permissions Are Non-Transitive
+
+- Authorization for one command group MUST NOT imply authorization
+  for any other command group.
+- Delegation of a command group MUST NOT grant authority outside that group.
+
+### INV-CMD-GRP-3: Group Authorization Is Required for Execution
+
+- A command MUST NOT be executed unless the requesting identity is authorized
+  for the command’s group and all confirmation requirements are satisfied.
 
 ## Command Confirmation Invariants
 
@@ -261,3 +441,4 @@ On failure, the system SHOULD:
 ## Change Log
 
 - 2026-01-16: Initial version.
+- 2026-01-16: Added age safety, legal-name protection, third-party fact rules, and birthday greeting safety.

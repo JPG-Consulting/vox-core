@@ -24,8 +24,10 @@ ESP32-S3 or Raspberry Pi Zero 2W.
 Key characteristics:
 - low-latency, streaming voice interaction (STT → LLM → TTS)
 - multi-user conversations with identity awareness
+- linguistic correctness via addressing preferences (e.g., grammatical gender, preferred name)
+- age-aware and minor-safe behavior
 - strict privacy, consent, and security guarantees
-- role-based command execution with delegation and confirmation
+- role- and group-based command execution with delegation and confirmation
 - extensible design (vision, RAG, external LLM fallback)
 
 The system is designed to run on **MiniPC-class hardware** by enforcing
@@ -61,10 +63,13 @@ The LLM is treated as a **text generator**, not a policy engine.
 
 All non-trivial behavior is governed by explicit state machines:
 - identity resolution and locking
+- addressing resolution (grammatical gender and preferred name)
+- age context derivation (minor-safe defaults)
 - conversation modes
 - command execution and confirmation
-- permission delegation
+- permission delegation (group-scoped)
 - consent lifecycle
+- date-aware system events (e.g., birthday greeting)
 
 No implicit state transitions are allowed.
 
@@ -79,6 +84,8 @@ Documentation:
 - declares dependencies between documents
 - is authoritative and versioned
 - must stay consistent with code
+
+All documentation changes MUST comply with `DOCUMENTATION_POLICY.md`.
 
 ---
 
@@ -111,6 +118,9 @@ Dependencies are explicit and MUST be respected.
 - **AI_COLLABORATION.md**  
   Rules for how AI assistants must work with this repository.
 
+- **DOCUMENTATION_POLICY.md**  
+  Mandatory rules governing how documentation may be modified.
+
 ---
 
 ### Security & Rules
@@ -136,11 +146,11 @@ Dependencies are explicit and MUST be respected.
 ### State & Data
 
 - **STATE_MACHINES.md**  
-  All state machines (identity, conversation, commands, consent).  
+  All state machines (identity, addressing, age, conversation, commands, consent, system events).  
   Depends on: ARCHITECTURE.md, SECURITY_INVARIANTS.md
 
 - **DATA_MODELS.md**  
-  Schemas for users, conversations, permissions, delegations, pending objects.  
+  Schemas for users, conversations, addressing preferences, age context, permissions, delegations, pending objects, and fact provenance.  
   Used by: STATE_MACHINES.md, COMMANDS.md, RAG.md
 
 ---
@@ -151,7 +161,7 @@ Dependencies are explicit and MUST be respected.
   Definition and categorization of intents.
 
 - **INTENTS_COMMAND_MAPPING.md**  
-  Authoritative mapping of which intents may execute which commands.  
+  Authoritative mapping of which intents may execute which commands (including command groups).  
   Depends on: INTENTS.md, COMMANDS.md, SECURITY_INVARIANTS.md
 
 - **COMMANDS.md**  
@@ -180,9 +190,6 @@ Dependencies are explicit and MUST be respected.
 
 ---
 
-
----
-
 ### Roadmap (Non-Authoritative)
 
 - **TODO.md**  
@@ -191,24 +198,26 @@ Dependencies are explicit and MUST be respected.
   any document under `docs/`.  
   Intended for planning and coordination only.
 
+---
 
 ## Intended Reading Order
 
 For humans and AI assistants:
 
 1. PROJECT_OVERVIEW.md
-2. AI_COLLABORATION.md
-3. SECURITY_INVARIANTS.md
-4. ARCHITECTURE.md
-5. DEPLOYMENT.md
-6. STATE_MACHINES.md
-7. DATA_MODELS.md
-8. INTENTS.md
-9. INTENTS_COMMAND_MAPPING.md
-10. COMMANDS.md
-11. IDENTITY_FUSION.md
-12. VISION.md
-13. RAG.md
+2. DOCUMENTATION_POLICY.md
+3. AI_COLLABORATION.md
+4. SECURITY_INVARIANTS.md
+5. ARCHITECTURE.md
+6. DEPLOYMENT.md
+7. STATE_MACHINES.md
+8. DATA_MODELS.md
+9. INTENTS.md
+10. INTENTS_COMMAND_MAPPING.md
+11. COMMANDS.md
+12. IDENTITY_FUSION.md
+13. VISION.md
+14. RAG.md
 
 ---
 
@@ -225,3 +234,4 @@ For humans and AI assistants:
 
 - 2026-01-16: Updated to include identity fusion, intent-command mapping,
   vision, RAG, and deployment documentation.
+- 2026-01-17: Added reference to DOCUMENTATION_POLICY.md.
