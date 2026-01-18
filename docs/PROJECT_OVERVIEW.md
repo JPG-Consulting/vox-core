@@ -137,6 +137,9 @@ Dependencies are explicit and MUST be respected.
   System components, boundaries, and data flow.  
   Depends on: PROJECT_OVERVIEW.md
 
+- Text-to-Speech (TTS) behavior includes support for ephemeral language overrides
+  and explicit failure handling, as defined in `ARCHITECTURE.md`.
+
 - **DEPLOYMENT.md**  
   Deployment guidelines for MiniPC-class hardware.  
   Depends on: ARCHITECTURE.md, SECURITY_INVARIANTS.md
@@ -235,3 +238,4 @@ For humans and AI assistants:
 - 2026-01-16: Updated to include identity fusion, intent-command mapping,
   vision, RAG, and deployment documentation.
 - 2026-01-17: Added reference to DOCUMENTATION_POLICY.md.
+- 2026-01-18: Added TTS language override and failure handling reference.

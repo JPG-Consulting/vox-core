@@ -118,6 +118,19 @@ Provider types:
 
 Providers MAY be local or remote.
 
+#### Text-to-Speech (TTS) Provider Responsibilities
+
+- The TTS provider is responsible only for audio synthesis and optional prewarming.
+- The TTS provider MUST NOT enforce policy decisions, including:
+  - language fallback
+  - user confirmation
+  - error recovery strategy
+- All TTS language selection, override lifetime, and failure handling decisions
+  MUST be owned by the Server Core.
+- The TTS provider MUST explicitly signal failures (e.g. unavailable language,
+  synthesis failure) to the Core.
+- The TTS provider MUST NOT silently substitute languages, voices, or models.
+
 ---
 
 ### 4) Policy and Guards (Logical Components)
@@ -187,6 +200,17 @@ If a provider fails:
 - the Core handles it gracefully
 - unsafe actions are never executed
 
+### TTS Failure Handling (Language-Specific)
+
+- If a requested TTS language cannot be honored, the failure MUST be explicit.
+- Silent language substitution is forbidden.
+- The Server Core determines how to surface TTS failures, based on configuration.
+- The default behavior is to fail without producing audio.
+- An optional configuration MAY allow the Core to emit a clarification prompt
+  in the default language, asking the user how to proceed.
+- In all cases, the originally requested content MUST NOT be re-spoken in a
+  different language without explicit user confirmation.
+
 ---
 
 ## Extensibility Guarantees
@@ -203,3 +227,4 @@ All extensions MUST respect `SECURITY_INVARIANTS.md`.
 ## Change Log
 
 - 2026-01-16: Initial version.
+- 2026-01-18: Added TTS provider responsibilities and language-specific failure handling.

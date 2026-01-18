@@ -34,6 +34,12 @@ Items may change priority or be removed as the project evolves.
 - [x] Deployment constraints defined
 - [ ] Review documentation for consistency after first code scaffolding
 - [ ] Add diagrams (optional, non-authoritative)
+- [ ] Define and document the server-side configuration surface for
+  Text-to-Speech (TTS), including:
+  - default language selection
+  - ephemeral language override behavior
+  - configurable TTS failure handling strategy
+  (Reference: ARCHITECTURE.md – TTS provider responsibilities and failure handling)
 
 ### Repository Structure
 - [ ] Define final directory layout for `server/` and `satellite/`
